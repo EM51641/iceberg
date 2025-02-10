@@ -1,3 +1,5 @@
+# Iceberg Rest Catalog Flow
+
 ```mermaid
 graph TD
     A[SparkSQL] -->|1. Query| B[Iceberg Extensions]
