@@ -57,8 +57,8 @@ Key Differences:
 
     if you want to use spark locally, you can launch it with the following command:
        ```bash
-       spark-submit \        
-        --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.7.1,org.apache.iceberg:iceberg-aws-bundle:1.7.1 \
+    spark-submit
+         --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.7.1,org.apache.iceberg:iceberg-aws-bundle:1.7.1 
         src/main.py
        ```
 
