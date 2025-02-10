@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import time
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import rand
+import trino  # type: ignore
 
 def create_spark_session():
     spark = (
@@ -12,21 +12,15 @@ def create_spark_session():
         .config("spark.sql.catalog.rest", "org.apache.iceberg.spark.SparkCatalog")
         .config("spark.sql.catalog.rest.catalog-impl", "org.apache.iceberg.rest.RESTCatalog")
         .config("spark.sql.catalog.rest.uri", "http://localhost:8181")
-        .config("spark.sql.catalog.rest.warehouse", "s3a://iceberg")
         .config("spark.sql.catalog.rest.s3.endpoint", "http://localhost:9000")
         .config("spark.sql.catalog.rest.s3.access-key-id", "admin")
         .config("spark.sql.catalog.rest.s3.secret-access-key", "password")
-        # S3
-        .config("spark.hadoop.fs.s3.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-        .config("spark.hadoop.fs.s3a.endpoint", "http://localhost:9000")
-        .config("spark.hadoop.fs.s3a.access.key", "admin")
-        .config("spark.hadoop.fs.s3a.secret.key", "password")
-        .config("spark.hadoop.fs.s3a.path.style.access", "true")
+        .config("spark.sql.catalog.rest.s3.path-style-access", "true")
         .getOrCreate()
     )
     return spark
 
-def ingest_data(spark, num_rows=1000000):
+def ingest_data(spark, num_rows=100):
     print("Creating namespace in REST catalog if not exists...")
     spark.sql("CREATE NAMESPACE IF NOT EXISTS rest.default")
 
@@ -51,34 +45,33 @@ def query_with_spark(spark):
     count = df_spark.count()
     print(f"Spark: Total row count in table: {count}")
 
-# def query_with_presto():
-#     # Connect to Presto (Trino). Ensure that port 8080 is correctly mapped.
-#     print("Retrieving aggregation using Presto:")
-#     conn = trino.dbapi.connect(
-#         host="localhost",
-#         port=8080,
-#         user="test",  # Presto/Trino user (can be arbitrary)
-#         catalog="iceberg",  # Using the catalog defined in presto-catalog/iceberg.properties
-#         schema="default",
-#     )
-#     cur = conn.cursor()
-#     # Query the table created in the Hive catalog. In Presto, the table name is "big_data".
-#     cur.execute("SELECT count(*) FROM big_data")
-#     result = cur.fetchone()
-#     print(f"Presto: Total rows in table: {result[0]}")
+def query_with_presto():
+    # Connect to Presto (Trino). Ensure that port 8080 is correctly mapped.
+    print("Retrieving aggregation using Presto:")
+    conn = trino.dbapi.connect(
+        host="localhost",
+        port=8081,
+        user="test",  # Presto/Trino user (can be arbitrary)
+        catalog="rest",  # Using the catalog name defined in presto-catalog directory
+        schema="default",
+    )
+    cur = conn.cursor()
+    # Query the table created in the Hive catalog. In Presto, the table name is "big_data".
+    cur.execute("SELECT * FROM big_data")
+    result = cur.fetchall()
+    print(f"Presto: Total rows in table: {len(result)}")
+    return result
 
 
 def main():
     spark = create_spark_session()
-    time.sleep(5)  # Wait a few seconds to ensure all catalog connections are ready
 
-    # Ingest data using Spark.
-    ingest_data(spark, num_rows=1000000)  # Adjust num_rows to simulate a high-volume ingestion
-    # query_with_spark(spark)
-# 
-    # # Pause to ensure the data is committed and visible for external queries.
-    # time.sleep(5)
-    # query_with_presto()
+    ingest_data(spark)
+
+    data = query_with_presto()
+    
+    with open("file.txt", "w") as f:
+        f.write(str(data))
 
     spark.stop()
 

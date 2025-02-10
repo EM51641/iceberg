@@ -23,7 +23,7 @@ FROM tabulario/spark-iceberg
 WORKDIR /home/iceberg
 
 # Copy installed packages from builder
-COPY --from=builder /build/.venv/lib/python3.9/site-packages/ /usr/local/lib/python/site-packages/
+COPY --from=builder /build/.venv/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages
 
 # Copy the source code
 COPY ./src/main.py .
