@@ -1,22 +1,24 @@
 services:
-  spark-iceberg:
-    entrypoint: []
-    build:
-      context: .
-    networks:
-      iceberg_net:
-    depends_on:
-      - rest
-      - minio
-    environment:
-      - AWS_ACCESS_KEY_ID=admin
-      - AWS_SECRET_ACCESS_KEY=password
-      - AWS_REGION=us-east-1
-    ports:
-      - 8888:8888
-      - 8080:8080
-      - 10000:10000
-      - 10001:10001
+
+  # Uncomment this to use spark-iceberg container
+  #spark-iceberg:
+  #  entrypoint: []
+  #  build:
+  #    context: .
+  #  networks:
+  #    iceberg_net:
+  #  depends_on:
+  #    - rest
+  #    - minio
+  #  environment:
+  #    - AWS_ACCESS_KEY_ID=admin
+  #    - AWS_SECRET_ACCESS_KEY=password
+  #    - AWS_REGION=us-east-1
+  #  ports:
+  #    - 8888:8888
+  #    - 8080:8080
+  #    - 10000:10000
+  #    - 10001:10001
   rest:
     image: apache/iceberg-rest-fixture
     networks:
