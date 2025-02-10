@@ -2,7 +2,6 @@
 import time
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import rand
-# import trino
 
 def create_spark_session():
     spark = (
@@ -12,14 +11,17 @@ def create_spark_session():
         # REST catalog
         .config("spark.sql.catalog.rest", "org.apache.iceberg.spark.SparkCatalog")
         .config("spark.sql.catalog.rest.catalog-impl", "org.apache.iceberg.rest.RESTCatalog")
-        .config("spark.sql.catalog.rest.uri", "http://rest:8181")
-        .config("spark.sql.catalog.rest.s3.endpoint", "http://minio:9000")
+        .config("spark.sql.catalog.rest.uri", "http://localhost:8181")
+        .config("spark.sql.catalog.rest.warehouse", "s3a://iceberg")
+        .config("spark.sql.catalog.rest.s3.endpoint", "http://localhost:9000")
         .config("spark.sql.catalog.rest.s3.access-key-id", "admin")
         .config("spark.sql.catalog.rest.s3.secret-access-key", "password")
-        # S3/MinIO settings
-        #.config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000")
-        #.config("spark.hadoop.fs.s3a.access.key", "admin")
-        #.config("spark.hadoop.fs.s3a.secret.key", "password")
+        # S3
+        .config("spark.hadoop.fs.s3.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+        .config("spark.hadoop.fs.s3a.endpoint", "http://localhost:9000")
+        .config("spark.hadoop.fs.s3a.access.key", "admin")
+        .config("spark.hadoop.fs.s3a.secret.key", "password")
+        .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .getOrCreate()
     )
     return spark
@@ -82,4 +84,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    time.sleep(1000)
