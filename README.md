@@ -2,15 +2,22 @@
 
 ```mermaid
 graph TD
+
+    subgraph Query Engines 
+        A[SparkSQL]
+        P[Trino Coordinator]
+    end
+
     A[SparkSQL] -->|Query| B[Iceberg Extensions]
+    P[Trino Coordinator] -->|Query| B
     B -->|Get Metadata| C[REST Catalog]
     B -->|Read/Write Data| E[MinIO/S3]
 
-    P[Trino Coordinator] -->|Distributed Query| W[Worker Nodes]
-    W -->|Get Metadata| C[REST Catalog]
-    W -->|Read/Write Data| E[MinIO/S3]
+    A[SparkSQL] -->|Distribute| W[Worker Nodes, Spark Executors]
+    P[Trino Coordinator] -->|Distribute| W
+    W -->|Read/Write Data| E
 
-    C -->|Read/Write Metadata| E[MinIO/S3]
+    C -->|Read/Write Metadata| E
 ```
 # Iceberg
 This repository demonstrates a simple example of using Apache Iceberg with both SparkSQL and Trino (formerly PrestoSQL) query engines. The architecture diagram above shows the key differences in how these engines interact with Iceberg tables:
@@ -63,4 +70,4 @@ Key Differences:
     ```
 
     otherwise, you can use the spark-iceberg container by uncommenting the spark-iceberg service in the docker-compose.yaml file.
-    keep in mind that you need to change the endpoints in the `main.py`,  `docker-compose.yaml` and `presto-catalog/iceberg.properties` file to match the the ones on the docker bridge network.
+    keep in mind that you need to change the endpoints in the `main.py` and  `docker-compose.yaml` files to match the the ones on the docker bridge network.
