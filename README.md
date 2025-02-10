@@ -56,11 +56,11 @@ Key Differences:
 5. Launch spark.
 
     if you want to use spark locally, you can launch it with the following command:
-       ```bash
-    spark-submit
-         --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.7.1,org.apache.iceberg:iceberg-aws-bundle:1.7.1 
+    ```bash
+    spark-submit \
+        --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.7.1,org.apache.iceberg:iceberg-aws-bundle:1.7.1 \
         src/main.py
-       ```
+    ```
 
     otherwise, you can use the spark-iceberg container by uncommenting the spark-iceberg service in the docker-compose.yaml file.
     keep in mind that you need to change the endpoints in the `main.py`,  `docker-compose.yaml` and `presto-catalog/iceberg.properties` file to match the the ones on the docker bridge network.
