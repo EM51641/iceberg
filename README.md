@@ -2,13 +2,13 @@
 
 ```mermaid
 graph TD
-    A[SparkSQL] -->|1. Query| B[Iceberg Extensions]
-    B -->|2. Get Metadata| C[REST Catalog]
-    B -->|3. Read/Write Data| E[MinIO/S3]
+    A[SparkSQL] -->|Query| B[Iceberg Extensions]
+    B -->|Get Metadata| C[REST Catalog]
+    B -->|Read/Write Data| E[MinIO/S3]
 
-    P[Trino Coordinator] -->|1. Distributed Query| W[Worker Nodes]
-    W -->|2. Get Metadata| C[REST Catalog]
-    W -->|3. Read/Write Data| E[MinIO/S3]
+    P[Trino Coordinator] -->|Distributed Query| W[Worker Nodes]
+    W -->|Get Metadata| C[REST Catalog]
+    W -->|Read/Write Data| E[MinIO/S3]
 
     C -->|Read/Write Metadata| E[MinIO/S3]
 ```
