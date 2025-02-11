@@ -11,7 +11,6 @@ graph TD
     A[SparkSQL] -->|Query| B[Iceberg Extensions]
     P[Trino Coordinator] -->|Query| B
     B -->|Get Metadata| C[REST Catalog]
-    B -->|Read/Write Data| E[MinIO/S3]
 
     A[SparkSQL] -->|Distribute| W[Worker Nodes, Spark Executors]
     P[Trino Coordinator] -->|Distribute| W

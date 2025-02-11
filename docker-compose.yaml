@@ -1,7 +1,7 @@
 services:
 
   # Uncomment this to use spark-iceberg container
-  #spark-iceberg:
+  # spark-iceberg:
   #  entrypoint: []
   #  build:
   #    context: .
