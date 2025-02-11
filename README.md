@@ -16,7 +16,7 @@ graph TD
     P[Trino Coordinator] -->|Distribute| W
     W -->|Read/Write Data| E
 
-    C -->|Read/Write Metadata| E
+    C -->|Read/Write Metadata| E[MinIO/S3]
 ```
 # Iceberg
 This repository demonstrates a simple example of using Apache Iceberg with both SparkSQL and Trino (formerly PrestoSQL) query engines. The architecture diagram above shows the key differences in how these engines interact with Iceberg tables:
